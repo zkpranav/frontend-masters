@@ -1,0 +1,31 @@
+---
+language: node_js
+node_js:
+  - "8"
+
+sudo: required
+dist: trusty
+
+addons:
+  chrome: stable
+
+cache:
+  directories:
+    - $HOME/.npm
+before_install:
+  - npm config set spin false
+
+before_script:
+  - sudo chmod 4755 /opt/google/chrome/chrome-sandbox
+  - sudo chown root /opt/google/chrome/chrome-sandbox
+
+install:
+  - yarn install --non-interactive
+
+script: npm run test:ci
+
+after_success:
+  - npm run travis-deploy-once "npm run semantic-release"
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
