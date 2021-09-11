@@ -1,0 +1,238 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11640\viewh8560\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 To get more info use:\
+man page\
+explainshell.com\
+\
+\'97 VIM \'97\
+i for insert mode\
+esc for comand mode\
+: for last line mode\
+(shift + :)\
+\
+How to quit VIM?\
+:q!\
+\
+\'97 Initial commands \'97\
+man $COMMAND - to view manual on command\
+ping $IP - to ping an IP address\
+traceroute $IP - log all hops from local IP to target IP\
+dig $IP - DNS utility to find records\
+cat $FILENAME - concatenate entire file (similarly - less, head, tail)\
+tail \'97follow $FILENAME - last 10 lines of the file and keeps it open\
+ssh-keygen - generates new SSH key (public and private)\
+\
+\'97 DNS records \'97\
+A record - maps domain name to an IP\
+CNAME record - maps domain names/ sub domain names to other domain names\
+\
+\
+\
+\'97 Steps to setup a server \'97\
+1. Update Software\
+2. Create new user\
+3. Make new user a super user\
+4. Enable login for new user\
+5. Disable root (#) login\
+\
+\'97 Side notes \'97\
+Check with echo\
+\
+$USERNAME - A username you pick\
+$USER - An actual variable that points to the username you picked (i.e current user)\
+\
+\'97 If you get a domain name \'97\
+1. Configure nameserver usually with cloud provider for the server\'92s IP\
+2. Get A records for @ (root domain) and www\
+\
+\'97Login to server \'97\
+ssh -i $PRIVATEKEY root@$IP\
+\
+\'97 Update and Upgrade @server\'97\
+apt update\
+apt uprade\
+\
+\'97 Adding a user \'97\
+adduser $USERNAME\
+\
+\'97 Add user to sudo group \'97\
+usermod -aG sudo $USERNAME\
+\
+\'97 Switch user \'97\
+su $USERNAME\
+\
+\'97 Check sudo access by viewing auth.log \'97\
+sudo cat var/log/auth.log\
+\
+\'97 Create authorized key files \'97\
+cd ~\
+mkdir -parent ~/.ssh\
+vi ~/.ssh/authorized_keys - paste in the public SSH key\
+\
+\'97 Login with new user \'97\
+ssh -i $PRIVATEKEY $USER@$IP\
+\
+\'97 Change file permissions \'97\
+chmod 644 ~/.ssh/authorized_keys\
+\
+\'97 Disable root login \'97\
+sudo vi /etc/ssh/sshd_config\
+\
+\'97 Restart ssh daemon \'97\
+sudo service sshd restart\
+\
+\
+\
+\'97 Nginx \'97\
+\
+\'97 Install Nginx \'97\
+sudo apt install nginx\
+\
+\'97 Starting Nginx \'97\
+sudo service nginx start\
+\
+\'97 Nginx configuration \'97\
+sudo less /etc/nginx/sites-available/default\
+\
+\'97 A page to serve \'97\
+All resources are served from the root directory - /var/www/html/\
+create an index.html in there to serve\
+\
+\'97 Installing Node.js \'97\
+Node.js - single threaded, backend javascript environment that runs on google\'92s V8 engine\
+sudo apt install nodejs npm\
+\
+\'97 Installing Git \'97\
+sudo apt install git\
+\
+\'97 Change ownership of /var/www to current user \'97\
+sudo chown -R $USER:$USER /var/www\
+\
+-R is the recursive flag\
+No longer have to use sudo to manage that directory\
+\
+\'97 Creating a test application \'97\
+1. Create directory /var/www/app\
+2. Initialize with git and npm - git init && npm init\
+3. Create file structure\
+\
+4. Install Express\
+npm install express \'97save\
+\
+5. Edit app.js and create a barebones express server to run on some port\
+\
+6. Direct traffic from default port - 80 to the express port\
+\'97 Use Nginx \'97\
+Nginx is a - web server, reverse proxy and a proxy\
+reverse proxy - gather request and direct it to specific servers\
+proxy - gather requests and direct it to a server (i.e proxy to a server)\
+\
+\'97 Nginx directives \'97\
+location / \{\
+	proxy_pass http://127.0.0.1:3000/;\
+\}\
+\
+sudo service nginx reload\
+\
+7. Use a process manager to manage application servers\
+ \
+\'97 Process Manager \'97\
+- Keeps application running\
+- Handles errors and reloads\
+- can handle logging and clustering\
+eg: pm2, forever\
+\
+\'97 Installing pm2 \'97\
+sudo node i -g pm2\
+\
+\'97 Starting pm2 \'97\
+pm2 start app.js\
+pm2 status\
+pm2 show app\
+\
+Create a daemon to start pm2 when server restarts\
+pm2 startup\
+pm2 save\
+\
+\'97 Adding Version Control \'97\
+1. Create git repo\
+2. Create SSH key - ssh-keygen (best practice: id_rsa)\
+4. Add SSH to github - https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account\
+5. Add remote repo - https://docs.github.com/en/get-started/getting-started-with-git/managing-remote-repositories\
+6. Push local repo to github\
+\
+\
+\
+\'97 Some more bash basics \'97\
+Covered in slides\
+\
+\
+\
+\'97 Security \'97\
+1. Read auth.log\
+2. Keep up to date\
+\
+sudo apt install unattended-upgrades\
+\
+Firewall - Network security infrastructure to determine whether or not to allow requests in and out based on the source, protocol, etc.\
+\
+\'97 Uncomplicated Firewalls \'97\
+sudo ufw status - To determine status\
+\
+sudo ufw enable - To enable ufw\
+\
+sudo ufw allow ssh - To allow ssh\
+sudo ufw allow http\
+Other options include (deny, reject)\
+\
+\'97 File permissions \'97\
+rwx - Read, Write, Execute\
+ls -la - To view file permissions\
+\
+rwxrwxrwx - [user][group][everybody] - chmod 777 (Don\'92t use tihs)\
+		   rwx   rwx      rwx\
+\
+\'97 Upgrading node \'97\
+Initial update with apt installs version 8\
+\
+curl - Client URL\
+\
+1. Download setup script from node source\
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh\
+\
+2. Run script\
+sudo bash nodesource_setup.sh\
+Points the apt node package to this URL\
+\
+3. Re-installing node\
+sudo apt install nodejs\
+sudo npm update -g\
+\
+\'97 Headers and status code \'97\
+Theory in slides\
+\
+\'97 Containers, Orchestration and Load balancing \'97\
+Theory in slides\
+\
+\'97 Databases \'97\
+Theory in slides\
+\
+systemctl == service (similar commands just finer level of control, just like iptables and ufw)\
+\
+\'97 Websockets \'97\
+Persistent bi-directional communication between a client and a server\
+Unlike TCP which follows a handshake based approach\
+Websockets work on TCP\
+eg: Used in chat applications where two actors are known to communicate for a longer period of time\
+\
+\
+\
+\
+\
+\
+}
